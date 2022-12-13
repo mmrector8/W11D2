@@ -33,7 +33,8 @@ const folders = [
   
   //toggleClock = () => this.setState({ showClock: !this.state.showClock });
   const toggleClock = () => {
-    setShowClock(prevState => !prevState)
+    // setShowClock(prevState => !prevState)
+    setShowClock(!showClock);
   }
     return (
       <div className="widgets">

@@ -4,7 +4,7 @@ import { useState } from 'react';
 const Headers = ({ titles, currentTab, selectTab }) => {
   const handleClick = (e) => {
     const idx = parseInt(e.target.id, 10);
-    console.log(idx, 'idx')
+    // console.log(idx, 'idx')
     selectTab(idx);
   }
 
@@ -37,30 +37,32 @@ const Headers = ({ titles, currentTab, selectTab }) => {
 //       currentTab: 0
 //     };
 //   }
-const Folder = (props) => {
-  const [currentTab, setCurrentTab] = useState()
-
+const Folder = ({folders}) => {
+  const [currentTab, setCurrentTab] = useState(0);
   
-  const selectTab = (num) => {
-    console.log(num, 'num')
-    // setCurrentTab((currentTab) => currentTab = num);
-  }
+  // const selectTab = (num) => {
+  //   console.log(num, 'num')
+  //   console.log(currentTab);
+  //   // setCurrentTab((currentTab) => currentTab = num);
+  // }
   
-    const folder = props.folders[currentTab];
-    console.log(props.folders[0])
-    const titles = props.folders.map((folder) => folder.title);
+    const folder = folders[currentTab];
+    // console.log(folders)
+    const titles = folders.map((folder) => folder.title);
+    // console.log(titles);
+    // console.log(currentTab);
     
     return (
       <section className="tabs-section">
         <h1>Tabs</h1>
         <div className='tabs'>
           <Headers
-             titles={titles}
+            titles={titles}
             currentTab={currentTab}
-            selectTab={selectTab}
+            selectTab={setCurrentTab}
           />
           <div className='tab-content'>
-            {folder}
+            {folder.content}
           </div>
         </div>
       </section>
