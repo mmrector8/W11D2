@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 // class AutoComplete extends React.Component {
@@ -11,13 +11,28 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 //     };
 //     this.inputRef = React.createRef();
 //   }
-  const AutoComplete = ({names}) => {
-    const[showList, setShowList] = useState(false);
-    const[inputVal, setInputVal] = useState('');
 
-    // useEffect(()=>{
 
-    // })
+const AutoComplete = ({names}) => {
+  const[showList, setShowList] = useState(false);
+  const[inputVal, setInputVal] = useState('');
+  
+  const inputRef = React.useRef();
+  
+  useEffect(()=>{
+    if (showList) {
+      document.addEventListener('click', handleOutsideClick);
+      console.log('added event listener')
+    } //else {
+    //   console.log("Removing Autocomplete listener on update!");
+    //   document.removeEventListener('click', handleOutsideClick);
+    // }
+
+    return(()=>{
+      console.log("Cleaning up event listener from Autocomplete!");
+      document.removeEventListener('click', handleOutsideClick);
+    })
+  }, [showList]);
   // componentDidUpdate() {
   //   if (this.state.showList) {
   //     document.addEventListener('click', this.handleOutsideClick);
@@ -38,45 +53,47 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
   }
 
   const selectName = ({ target:  { innerText: name }}) => {
-    this.setState({ inputVal: name, showList: false });
+    // this.setState({ inputVal: name, showList: false });
+    setInputVal(name);
+    setShowList(false);
   }
 
   // Set focus to input field if user clicks anywhere inside the Autocomplete
   // section (unless they have selected a name from the dropdown list)
-  handleAutocompleteSectionClick = ({ target }) => {
+  const handleAutocompleteSectionClick = ({ target }) => {
     if (!target.classList.contains("nameLi")) {
-      this.inputRef.current.focus();
+      inputRef.current.focus();
     }
   }
 
-  handleOutsideClick = () => {
+  const handleOutsideClick = () => {
     // Leave dropdown visible as long as input is focused
-    if (document.activeElement === this.inputRef.current) return;
-    else this.setState({ showList: false });
+    if (document.activeElement === inputRef.current) return;
+    else setShowList(false);
   }
 
-  matches = () => {
-    const { inputVal } = this.state;
-    const { names } = this.props;
+  const matches = () => {
+    // const { inputVal } = inputVal;
+    // const { names } = names;
     const inputLength = inputVal.length;
-    const matches = [];
+    const nameMatches = [];
 
     if (inputLength === 0) return names;
 
     names.forEach(name => {
       const nameSegment = name.slice(0, inputLength);
       if (nameSegment.toLowerCase() === inputVal.toLowerCase()) {
-        matches.push(name);
+        nameMatches.push(name);
       }
     });
 
-    if (matches.length === 0) matches.push('No matches');
+    if (nameMatches.length === 0) nameMatches.push('No nameMatches');
 
-    return matches;
+    return nameMatches;
   }
 
-  render() {
-    const results = this.matches().map((result) => {
+  // render() {
+    const results = matches().map((result) => {
       const nodeRef = React.createRef();
       return (
         <CSSTransition
@@ -85,7 +102,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
           classNames="result"
           timeout={{ enter: 500, exit: 300 }}
         >
-          <li ref={nodeRef} className="nameLi" onClick={this.selectName}>
+          <li ref={nodeRef} className="nameLi" onClick={selectName}>
             {result}
           </li>
         </CSSTransition>
@@ -95,18 +112,18 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
     return (
       <section 
         className="autocomplete-section" 
-        onClick={this.handleAutocompleteSectionClick}
+        onClick={handleAutocompleteSectionClick}
       >
         <h1>Autocomplete</h1>
         <div className="auto">
           <input
             placeholder="Search..."
-            ref={this.inputRef}
-            onChange={this.handleInput}
-            value={this.state.inputVal}
-            onFocus={() => this.setState({ showList: true })}
+            ref={inputRef}
+            onChange={handleInput}
+            value={inputVal}
+            onFocus={() => setShowList(true)}
           />
-          {this.state.showList && (
+          {showList && (
             <ul className="auto-dropdown">
               <TransitionGroup>
                 {results}
@@ -116,7 +133,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
         </div>
       </section>
     );
-  }
+  // }
 }
 
 export default AutoComplete;
