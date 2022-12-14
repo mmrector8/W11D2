@@ -1,35 +1,43 @@
 import React from 'react';
+import {useState, useEffect} from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-class AutoComplete extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputVal: '',
-      showList: false
-    };
-    this.inputRef = React.createRef();
+// class AutoComplete extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       inputVal: '',
+//       showList: false
+//     };
+//     this.inputRef = React.createRef();
+//   }
+  const AutoComplete = ({names}) => {
+    const[showList, setShowList] = useState(false);
+    const[inputVal, setInputVal] = useState('');
+
+    // useEffect(()=>{
+
+    // })
+  // componentDidUpdate() {
+  //   if (this.state.showList) {
+  //     document.addEventListener('click', this.handleOutsideClick);
+  //     console.log('added event listener')
+  //   } else {
+  //     console.log("Removing Autocomplete listener on update!");
+  //     document.removeEventListener('click', this.handleOutsideClick);
+  //   }
+  // }
+
+  // componentWillUnmount () {
+  //   console.log("Cleaning up event listener from Autocomplete!");
+  //   document.removeEventListener('click', this.handleOutsideClick);
+  // }
+
+  const handleInput = (e) => {
+    setInputVal(e.target.value);
   }
 
-  componentDidUpdate() {
-    if (this.state.showList) {
-      document.addEventListener('click', this.handleOutsideClick);
-    } else {
-      console.log("Removing Autocomplete listener on update!");
-      document.removeEventListener('click', this.handleOutsideClick);
-    }
-  }
-
-  componentWillUnmount () {
-    console.log("Cleaning up event listener from Autocomplete!");
-    document.removeEventListener('click', this.handleOutsideClick);
-  }
-
-  handleInput = (e) => {
-    this.setState({ inputVal: e.target.value });
-  }
-
-  selectName = ({ target:  { innerText: name }}) => {
+  const selectName = ({ target:  { innerText: name }}) => {
     this.setState({ inputVal: name, showList: false });
   }
 
